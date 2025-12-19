@@ -1,10 +1,10 @@
-type medical = {
+export type medical = {
   vaccinations: string[];
   weightKg: number;
   microchipId: string | null;
 };
 
-type Pet = {
+export type Pet = {
   id: number;
   name: string;
   species: string;
