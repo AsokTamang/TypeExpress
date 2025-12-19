@@ -9,7 +9,7 @@ const PORT = 3000;
 const app: Express = express();
 app.use(cors());
 
-app.use(petRouter)  //as we have made separate routes , we are making our app to use router
+app.use('/pets',petRouter)  //as we have made separate routes , we are making our app to use router and our main default url is /pets
 app.use((req: Request, res: Response<{ message: string }>): void => {
   res.status(404).json({ message: "Not Found" });
 }); //using a middleware
