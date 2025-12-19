@@ -9,17 +9,22 @@ type Pet = {
   species: string,
   adopted: boolean,
   age: number
-}
+}[]  //here we are declaring that this type Pet is an array of object
 
-const pet:Pet = {
+const pets:Pet = [{
   name: "Rubik",
   species: "Cat",
   adopted: true,
   age: 3
-}
+},{
+   name: "Juby",
+  species: "Dog",
+  adopted: true,
+  age: 2
+}]
 
 app.get('/', (req, res)=> {
-  res.json(pet)
+  res.json(pets)
 })
 
 app.listen(PORT, ():void =>{
