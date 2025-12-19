@@ -7,11 +7,29 @@ import type { Pet } from "./data/pets.js";
 const PORT = 3000;
 const app: Express = express();
 app.use(cors());
-app.get("/", (req: Request, res: Response<Pet[]>): void => {
-  //as the pets is an array of objects which are of type Pet
-  //declaring the type for both req and res
-  res.json(pets);
-});
+
+app.get(
+  "/",
+  (
+    req: Request<{ species: string }>,
+    res: Response<Pet[] | { message: string }>
+  ): void => {
+    const { species } = req.query;
+    if (species) {
+      const datas: Pet[] = pets.filter(
+        (pet) => pet.species.toLowerCase() === String(species).toLowerCase()
+      ); //as the filter returns an array
+      if (datas) {
+        res.json(datas);
+      }
+    } 
+    
+    
+    else {
+      res.status(404).json({ message: "No species provided!" });
+    }
+  }
+);
 
 app.get(
   "/:id",
@@ -22,11 +40,13 @@ app.get(
     //as this function is not returning anything we must use void type
     //here as we are sending the response in json which is of type Pet
     const { id } = req.params; //here we are getting the id from the req params
-    const pet: Pet | undefined = pets.find((pet: Pet) => pet.id === Number(id)); //and as the id is string type initially , we must convert it into number
+    const pet: Pet | undefined = pets.find(
+      (pet: Pet): boolean => pet.id === Number(id)
+    ); //and as the id is string type initially , we must convert it into number
     if (pet) {
       res.json(pet);
     } else {
-      res.json({ message: "Not found!" });
+      res.status(404).json({ message: "Not found!" });
     }
   }
 );
