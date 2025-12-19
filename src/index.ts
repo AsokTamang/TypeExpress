@@ -1,6 +1,8 @@
 type reqeurytype = {
   species?: string;
   adopted: 'true'|'false';   //here the adopted in the query must be either true or false
+  minAge:number;
+  maxAge:number
 }; 
 
 import express from "express";
@@ -20,9 +22,30 @@ app.get(
     //and as the species might or might not be given in url , we are making the species optional
     res: Response<Pet[] | { message: string }>
   ): void => {
-    const { species, adopted } = req.query;
+    const { species, adopted,minAge,maxAge } = req.query;
+   
 
     let filteredPets: Pet[] = pets;
+    if (minAge && maxAge) {
+      filteredPets = filteredPets.filter(
+        (pet: Pet): boolean =>
+          pet.age >= Number(minAge)
+      ).filter((pet)=>pet.age<=Number(maxAge));
+    }
+    else if (minAge){
+       filteredPets = filteredPets.filter(
+        (pet: Pet): boolean =>
+          pet.age >= Number(minAge)
+      );
+      
+    }
+    else if (maxAge){
+       filteredPets = filteredPets.filter(
+        (pet: Pet): boolean =>
+          pet.age <= Number(maxAge)
+      );
+      
+    }
 
     if (species) {
       filteredPets = filteredPets.filter(
