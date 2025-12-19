@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "name": "typeexpress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.5",
+    "@types/express": "^5.0.6",
+    "typescript": "^5.9.3"
+  },
+  "scripts": {
+    "start": "npx tsc && node dist/index.js" 
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module"
+}
