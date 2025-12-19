@@ -1,3 +1,8 @@
+type reqeurytype = {
+  species?: string;
+  adopted: 'true'|'false';   //here the adopted in the query must be either true or false
+}; 
+
 import express from "express";
 import type { Express, Request, Response } from "express";
 import { pets } from "./data/pets.js";
@@ -11,23 +16,26 @@ app.use(cors());
 app.get(
   "/",
   (
-    req: Request<{ species: string }>,
+    req: Request<{}, unknown, {}, Partial<reqeurytype>>, //here the generic type of the req in express is <params,resbody,reqbody,query> and as the query type is partial of reqeurytype
+    //and as the species might or might not be given in url , we are making the species optional
     res: Response<Pet[] | { message: string }>
   ): void => {
-    const { species } = req.query;
+    const { species, adopted } = req.query;
+
+    let filteredPets: Pet[] = pets;
+
     if (species) {
-      const datas: Pet[] = pets.filter(
-        (pet) => pet.species.toLowerCase() === String(species).toLowerCase()
-      ); //as the filter returns an array
-      if (datas) {
-        res.json(datas);
-      }
-    } 
-    
-    
-    else {
-      res.status(404).json({ message: "No species provided!" });
+      filteredPets = filteredPets.filter(
+        (pet: Pet): boolean =>
+          pet.species.toLowerCase() === species.toLowerCase()
+      );
     }
+    if (adopted) {
+      filteredPets = filteredPets.filter(
+        (pet: Pet): boolean => pet.adopted === JSON.parse(adopted.toLowerCase())  //JSON.parse only works on the lower case of adopted  
+      );
+    }
+    res.json(filteredPets);
   }
 );
 
