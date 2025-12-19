@@ -9,9 +9,9 @@ type Pet = {
   species: string,
   adopted: boolean,
   age: number
-}[]  //here we are declaring that this type Pet is an array of object
+} 
 
-const pets:Pet = [{
+const pets:Pet[] = [{
   name: "Rubik",
   species: "Cat",
   adopted: true,
