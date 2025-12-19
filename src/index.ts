@@ -13,6 +13,13 @@ app.get("/", (req: Request, res: Response<Pet[]>): void => {
   res.json(pets);
 });
 
+app.get("/:id", (req: Request, res: Response<Pet>): void => {    //as this function is not returning anything we must use void type
+  //here as we are sending the response in json which is of type Pet
+  const { id } = req.params; //here we are getting the id from the req params
+  const data = pets.find((pet: Pet) => pet.id === Number(id)); //and as the id is string type initially , we must convert it into number
+  res.json(data);
+});
+
 app.use((req: Request, res: Response<{ message: string }>): void => {
   res.status(404).json({ message: "Not Found" });
 }); //using a middleware

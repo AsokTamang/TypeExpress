@@ -1,4 +1,4 @@
-export type medical = {
+type medical = {
   vaccinations: string[];
   weightKg: number;
   microchipId: string | null;
