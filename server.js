@@ -1,5 +1,5 @@
 import express from "express";
-import { productsRouter } from "./routes/product.js";
+import { productsRouter } from "./routes/products.js";
 
 const app = express();
 app.use(express.static("public")); //here we are using the built-in middleware of express in our app

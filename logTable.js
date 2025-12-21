@@ -8,8 +8,8 @@ export async function viewTable() {
     driver: sqlite3.Database,
   });
   try {
-    const abductions = await db.all("SELECT * FROM abductions");
-    console.table(abductions);
+    const products = await db.all("SELECT * FROM products");
+    console.table(products);
   } catch (error) {
     console.log(error);
   } finally {

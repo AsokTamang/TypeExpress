@@ -11,7 +11,7 @@ export async function createTable() {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
     artist TEXT NOT NULL,
-    price FLOAT NOT NULL,
+    price REAL NOT NULL,
     image TEXT NOT NULL,
     year INTEGER,
     genre TEXT ,
