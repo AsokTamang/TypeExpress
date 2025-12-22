@@ -16,7 +16,7 @@ export async function registerUser(req, res) {
     console.log("Invalid email");
     return;
   }
-  if (!regex.test(username)) {
+  if (!regex.test(username)) {    //here we are using the .test method on regex so that the username must consists of these characters inside the regex only
     res.status(400).json({ error: "Invalid username" });
     console.log("Invalid username");
     return;
