@@ -11,21 +11,21 @@ export async function seedTable() {
 
   try {
     await db.exec("BEGIN TRANSACTION");
-    for (const { title, aritst, price, image, year, genre, stock } of vinyl) {
+    for (const { title, artist, price, image, year, genre, stock } of vinyl) {
       await db.run(
         `INSERT INTO  products 
         ( title,
-      aritst,
+      artist,
       price,
       image,
       year,
       genre,
-      stock,) VALUES (?,?)`,
-        [title, aritst, price, image, year, genre, stock]
+      stock) VALUES (?,?,?,?,?,?,?)`,
+        [title, artist, price, image, year, genre, stock]
       ); //here in sqlite we use ? as the placeholder and array of the data as the actual values
     }
     await db.exec("COMMIT");
-    console.log("Successfully inserted intp DB");
+    console.log("Successfully inserted into DB");
   } catch (error) {
     await db.exec("ROLLBACK"); //here if we find any error then we just rollback which means we stop the insertion
   } finally {
@@ -33,3 +33,4 @@ export async function seedTable() {
     console.log("INSERTION FINISHED");
   }
 }
+seedTable();
