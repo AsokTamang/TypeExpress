@@ -1,5 +1,6 @@
 import validator from "validator";
 import { getDBConnection } from "../db/db.js";
+import bcrypt from 'bcrypt'
 export async function registerUser(req, res) {
   let { name, username, email, password } = req.body;
   const regex = /^[a-zA-Z0-9_-]{1,20}$/;
@@ -29,8 +30,10 @@ export async function registerUser(req, res) {
     return res.status(409).json({ error: "Email or username already in use." });
   }
   else{
-    await db.run(`INSERT INTO users (name,email,username,password)
-        VALUES(?,?,?,?)`,[name,email,username,password]);
+    //as we are inserting single data into database, we are using db.run() here
+    const hasedPW = await bcrypt.hash(password,10)  //here we are using brypt inorder to hash the password passed from UI
+    await db.run(`INSERT INTO users (name,email,username,password)  
+        VALUES(?,?,?,?)`,[name,email,username,hasedPW]);
         return res.status(201).json({message:'User registered'})
         
   }
