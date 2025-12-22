@@ -10,19 +10,13 @@ export async function seedTable() {
   });
 
   try {
-    await db.exec("BEGIN TRANSACTION");
+    await db.exec("BEGIN TRANSACTION"); //as we cannot do exec for the insertion of multiple datas in a database so we are using BEGIN TRANSACTION on exec
+    //but db.run is used for the insertion of multiple datas in a database
     for (const { title, artist, price, image, year, genre, stock } of vinyl) {
       await db.run(
-        `INSERT INTO  products 
-        ( title,
-      artist,
-      price,
-      image,
-      year,
-      genre,
-      stock) VALUES (?,?,?,?,?,?,?)`,
+        "INSERT INTO products (title,artist,price,image,year,genre,stock) VALUES (?,?,?,?,?,?,?)",
         [title, artist, price, image, year, genre, stock]
-      ); //here in sqlite we use ? as the placeholder and array of the data as the actual values
+      );
     }
     await db.exec("COMMIT");
     console.log("Successfully inserted into DB");

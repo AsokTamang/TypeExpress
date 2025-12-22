@@ -9,7 +9,14 @@ export async function viewTable() {
   });
   try {
     const products = await db.all(`SELECT * FROM products`);
-    console.table(products);
+    const cleandata = products.map(({ id, title, artist, genre }) => ({
+      id,
+      title,
+      artist,
+      genre,
+
+    }));
+    console.table(cleandata);
   } catch (error) {
     console.log(error);
   } finally {
