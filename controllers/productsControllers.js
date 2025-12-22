@@ -17,7 +17,8 @@ export async function getProducts(req, res) {
     }
     else if (search) {
       query += `WHERE (title LIKE ? OR artist LIKE ? OR genre LIKE ?)`; //if the search letter is given then we retrieve the product based on letters that are in title or genre or artist
-      vals.push(`%${search}%`, `%${search}%`, `%${search}%`); //we must pass the %search% inside  the vals array 3 times as there are 3 placholders in the query
+      const searchpattern = `%${search}%`;
+      vals.push(searchpattern, searchpattern, searchpattern); //we must pass the %search% inside  the vals array 3 times as there are 3 placholders in the query
     }
     const total = await db.all(query, vals); //here we are passing the query at first then we are passing the array of values depending upon the placeholders
     res.status(200).json(total);
