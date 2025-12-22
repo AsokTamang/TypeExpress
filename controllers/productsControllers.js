@@ -7,9 +7,18 @@ const db = await getDatabase();
 
 export async function getProducts(req, res) {
   try {
+    const { genre } = req.query;  //extracting the genre from req query 
     let query = `SELECT * FROM products`;
-    const total = await db.all(query);
-    res.status(200).json(total);
+    if (genre) {
+      query = `SELECT * FROM products WHERE genre=?`;
+      let total = await db.all(query, [genre]);
+       res.status(200).json(total);
+    } else {
+      let total = await db.all(query);
+       res.status(200).json(total);
+    }
+
+   
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
