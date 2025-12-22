@@ -7,18 +7,20 @@ const db = await getDatabase();
 
 export async function getProducts(req, res) {
   try {
-    const { genre } = req.query;  //extracting the genre from req query 
-    let query = `SELECT * FROM products`;
-    if (genre) {
-      query = `SELECT * FROM products WHERE genre=?`;
-      let total = await db.all(query, [genre]);
-       res.status(200).json(total);
-    } else {
-      let total = await db.all(query);
-       res.status(200).json(total);
-    }
+    const { genre, search } = req.query; //extracting the genre from req query
 
-   
+    let query = `SELECT * FROM products `;
+    let vals = [];
+    if (genre) {
+      query += `WHERE genre = ?`;
+      vals.push(genre);
+    }
+    else if (search) {
+      query += `WHERE (title LIKE ? OR artist LIKE ? OR genre LIKE ?)`; //if the search letter is given then we retrieve the product based on letters that are in title or genre or artist
+      vals.push(`%${search}%`, `%${search}%`, `%${search}%`); //we must pass the %search% inside  the vals array 3 times as there are 3 placholders in the query
+    }
+    const total = await db.all(query, vals); //here we are passing the query at first then we are passing the array of values depending upon the placeholders
+    res.status(200).json(total);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
