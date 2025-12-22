@@ -1,9 +1,6 @@
-import path from "node:path";
-import { open } from "sqlite";
-import sqlite3 from "sqlite3";
-import { getDatabase } from "../utils/dataconnection";
+import { getDBConnection } from "../db/db.js";
 
-const db = await getDatabase();
+const db = await getDBConnection();
 
 export async function getProducts(req, res) {
   try {

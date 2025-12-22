@@ -3,12 +3,13 @@ import { getDatabase } from "./db/db.js";
 export async function viewTable() {
   const db = await getDatabase();
   try {
-    const products = await db.all(`SELECT * FROM products`);
-    const cleandata = products.map(({ id, title, artist, genre }) => ({
+    const products = await db.all(`SELECT * FROM user`);
+    const cleandata = products.map(({ id, name, username, email,password }) => ({
       id,
-      title,
-      artist,
-      genre,
+      name,
+      username,
+      email,
+      password
 
     }));
     console.table(cleandata);

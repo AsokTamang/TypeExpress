@@ -1,7 +1,9 @@
 import validator from "validator";
+import { getDBConnection } from "../db/db.js";
 export async function registerUser(req, res) {
   let { name, username, email, password } = req.body;
   const regex = /^[a-zA-Z0-9_-]{1,20}$/;
+  const db=await getDBConnection();
 
   if (!name || !username || !email || !password) {
     res.status(400).json({ error: "All fields are required" });
@@ -21,4 +23,21 @@ export async function registerUser(req, res) {
     console.log("Invalid username");
     return;
   }
+  try {
+    const condition = await db.get(`SELECT * FROM users WHERE username = ? OR email = ?`,[username,email])
+  if (condition!==undefined) {
+    return res.status(409).json({ error: "Email or username already in use." });
+  }
+  else{
+    await db.run(`INSERT INTO users (name,email,username,password)
+        VALUES(?,?,?,?)`,[name,email,username,password]);
+        return res.status(201).json({message:'User registered'})
+        
+  }
+    
+  } catch (error) {
+    return res.status(500).json({error:'Network error'})
+    
+  }
+  
 }
