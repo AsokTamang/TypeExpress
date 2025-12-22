@@ -1,6 +1,9 @@
 import validator from "validator";
 import { getDBConnection } from "../db/db.js";
 import bcrypt from "bcrypt";
+import dotenv from 'dotenv'
+
+dotenv.config();   
 export async function registerUser(req, res) {
   let { name, username, email, password } = req.body;
   const regex = /^[a-zA-Z0-9_-]{1,20}$/;
