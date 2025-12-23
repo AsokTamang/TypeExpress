@@ -54,14 +54,16 @@ export async function registerUser(req, res) {
 export async function loginUser(req, res) {
   try {
     const db = await getDBConnection();
-    const { username, password } = await req.body;
+    let { username, password } = await req.body;
     if (!username || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
+    username = username.trim();
     const existing = await db.get(`SELECT * FROM users WHERE username = ?`, [
       username,
     ]);
-    if (!existing || !(await bcrypt.compare(password, existing.password))) {  //here exissting.password is the hassed password
+    if (!existing || !(await bcrypt.compare(password, existing.password))) {
+      //here exissting.password is the hassed password
       //if the user doesnot exists or the password doesnot match
       return res.status(400).json({ error: "Invalid credentials" });
     }
@@ -71,5 +73,14 @@ export async function loginUser(req, res) {
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ error: "Login failed" });
+  }
+}
+
+export async function logoutUser(req, res) {
+  try {
+    return await req.session.destroy(()=>res.status(200).json({ message:'Logged out' })); //here we are removing the userId which is inside the session
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: "logout failed" });
   }
 }
