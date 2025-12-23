@@ -9,11 +9,11 @@ export async function checkAuth() {
     } 
 
     const user = await res.json()
-    if (user.isGuest) {
+    if (!user.isLoggedIn) {  //if the user is not logged in then we just return false
       return false
     }
 
-    return user.name
+    return user.name //as our endpoint api/auth/me is returning the name and the isLoggedIn in json like {isLoggedIn,name}
 
   } catch (err) {
     console.log(err, 'Auth check failed')

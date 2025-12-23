@@ -2,15 +2,21 @@ import express from "express";
 import { productsRouter } from "./routes/products.js";
 import { authRouter } from "./routes/auth.js";
 import session from "express-session";
+import dotenv from 'dotenv'
+import { meRouter } from "./routes/me.js";
+
+
+dotenv.config();  //we can only access the credentials from .env after dotenv.config()
 const app = express();
-const secret = process.env.secret;
+const secret = process.env.SECRET;
+console.log(secret)
 app.use(express.static("public")); //here we are using the built-in middleware of express in our app
 app.use("/api/products", productsRouter);
 app.use(express.json()); //here express.json() middleware is used for converting any req body into json
 app.use(
   session({
-    secret,
-    resave: false,
+    secret,  //this is the secret key for assigning the session
+    resave: false,   //resave means we are not saving the session to store in every request
     saveUninitialized: false,
     cookie: {
       httpOnly: true,   //here we are using httponly to true so that cookie cannot be accessed via javascript which prevents from hacking of data
@@ -19,6 +25,8 @@ app.use(
     },
   })
 );
+
+app.use('/api/auth',meRouter);
 app.use("/api/auth", authRouter); // /api/auth gonna be the default route for our authentication
 const PORT = 8000;
 app

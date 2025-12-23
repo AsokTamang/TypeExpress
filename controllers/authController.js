@@ -1,9 +1,7 @@
 import validator from "validator";
 import { getDBConnection } from "../db/db.js";
 import bcrypt from "bcrypt";
-import dotenv from 'dotenv'
 
-dotenv.config();   
 export async function registerUser(req, res) {
   let { name, username, email, password } = req.body;
   const regex = /^[a-zA-Z0-9_-]{1,20}$/;
@@ -14,13 +12,12 @@ export async function registerUser(req, res) {
     console.log("Fields are empty");
     return;
   }
-  name = name.trim();
+  name = name.trim(); //we are using .trim method inorder to remove the whitespace at the beginning and at the end of the word
   username = username.trim();
   email = email.trim();
   if (!validator.isEmail(email)) {
-    res.status(400).json({ error: "Invalid email" });
     console.log("Invalid email");
-    return;
+    return res.status(400).json({ error: "Invalid email" });
   }
   if (!regex.test(username)) {
     //here we are using the .test method on regex so that the username must consists of these characters inside the regex only
@@ -45,11 +42,34 @@ export async function registerUser(req, res) {
         VALUES(?,?,?,?)`,
         [name, email, username, hasedPW]
       );
-      req.session.userId = result.lastID; //this lastID is provided by sqlite3 or any sql which is the id of the users i.e primary key in nature
+      //after the user has been registered , we assign the user's id as userId in the session
 
       return res.status(201).json({ message: "User registered" });
     }
   } catch (error) {
     return res.status(500).json({ error: "Network error" });
+  }
+}
+
+export async function loginUser(req, res) {
+  try {
+    const db = await getDBConnection();
+    const { username, password } = await req.body;
+    if (!username || !password) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
+    const existing = await db.get(`SELECT * FROM users WHERE username = ?`, [
+      username,
+    ]);
+    if (!existing || !(await bcrypt.compare(password, existing.password))) {  //here exissting.password is the hassed password
+      //if the user doesnot exists or the password doesnot match
+      return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    req.session.userId = existing.id; //as we are selecting the id
+    return res.status(200).json({ message: "Logged in" });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ error: "Login failed" });
   }
 }
