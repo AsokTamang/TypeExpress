@@ -4,7 +4,7 @@ import { authRouter } from "./routes/auth.js";
 import session from "express-session";
 import dotenv from 'dotenv'
 import { meRouter } from "./routes/me.js";
-
+import { cartRouter } from "./routes/cart.js";
 
 dotenv.config();  //we can only access the credentials from .env after dotenv.config()
 const app = express();
@@ -28,6 +28,7 @@ app.use(
 
 app.use('/api/auth',meRouter);
 app.use("/api/auth", authRouter); // /api/auth gonna be the default route for our authentication
+app.use("/api/cart",cartRouter);
 const PORT = 8000;
 app
   .listen(PORT, () =>
