@@ -33,3 +33,22 @@ export async function addToCart(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
+export async function getCartCount(req, res) {
+  try {
+    const currentuser = req.session.userId;
+    const db = await getDBConnection();
+    const count = await db.get(
+      `SELECT SUM(quantity) AS total FROM cart_items WHERE user_id = ?`,
+      [currentuser]
+    ); //here we are counting the number of products inside the cart of current user by the sum of quantity column's data of this current user
+    if (count.total>0) {
+      return res.status(200).json({ totalItems: count.total });
+     
+    }
+     return res.status(200).json({ totalItems: 0 });
+    
+  } catch (error) {
+    return res.status(500).json({ error: "Network Error" });
+  }
+}
