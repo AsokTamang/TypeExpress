@@ -3,7 +3,7 @@ import { getDBConnection } from "../db/db";
 export async function getAll(req, res) {
   try {
     const db = await getDBConnection();
-    const items = await db.all(
+    const items = await db.all( //the default join is full join
       `SELECT ci.id AS cartItemId , ci.quantity , p.title , p.artist , p.price  FROM cart_items ci JOIN products p ON p.id = ci.product_id WHERE ci.user_id = ?`,
       [req.session.userId]
     ); //here we are selecting the products from the cart items whose user product_id matches with the id of product and the user_id of ci also matches with the current user id
@@ -63,3 +63,32 @@ export async function getCartCount(req, res) {
     return res.status(500).json({ error: "Network Error" });
   }
 }
+
+export async function deleteItem(req, res) {  //deleting the item based on the product id
+  try { 
+    const db = await getDBConnection();
+    const { itemId } = await req.params; //extracting the itemId through the params
+    await db.run(
+      `DELETE * FROM cart_items WHERE product_id = ? AND user_id = ?`,
+      [itemId, req.session.userId]
+    ); //deleting the item from cart based on product id
+    return res.status(204);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
+
+export async function deleteAll(req, res) {  //deleting the item based on the product id
+  try { 
+    const db = await getDBConnection();
+    await db.run(
+      `DELETE * FROM cart_items WHERE AND user_id = ?`,
+      [req.session.userId]
+    ); //deleting the item from cart based on product id
+    return res.status(204);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}
+
